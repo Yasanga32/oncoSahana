@@ -9,7 +9,13 @@ import { User, Mail, Lock, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContent);
+  const { backendUrl, isLoggedin, setIsLoggedin, getUserData, loading } = useContext(AppContent);
+
+  React.useEffect(() => {
+    if (!loading && isLoggedin) {
+      router.push('/dashboard');
+    }
+  }, [isLoggedin, loading, router]);
 
   const [state, setState] = useState('Login');
   const [name, setName] = useState('');

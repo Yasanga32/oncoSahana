@@ -11,6 +11,7 @@ export const AppContextProvider = ({ children }) => {
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     const [isLoggedin, setIsLoggedin] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     // Ensure axios sends cookies
     axios.defaults.withCredentials = true;
@@ -34,9 +35,10 @@ export const AppContextProvider = ({ children }) => {
                 setIsLoggedin(true)
                 getUserData()
             }
-
         } catch (error) {
             console.error('Error fetching auth state:', error.message);
+        } finally {
+            setLoading(false);
         }
     }, [backendUrl, getUserData]);
 
@@ -51,7 +53,8 @@ export const AppContextProvider = ({ children }) => {
         isLoggedin, setIsLoggedin,
         userData, setUserData,
         getUserData,
-        getAuthState
+        getAuthState,
+        loading
     }
 
     return (

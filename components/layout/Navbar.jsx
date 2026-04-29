@@ -115,8 +115,8 @@ const Navbar = () => {
                 Log in
               </Link>
               <Link
-                href="/register"
-                className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:opacity-90 transition-opacity"
+                href="/login"
+                className="px-4 py-2 text-sm font-medium bg-cta text-white rounded-lg hover:opacity-90 transition-opacity"
               >
                 Get Started
               </Link>
