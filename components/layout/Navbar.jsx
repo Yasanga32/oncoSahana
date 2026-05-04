@@ -17,6 +17,7 @@ const Navbar = () => {
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Blogs', href: '/blogs' },
     { name: 'AI Support', href: '/ai-support' },
+    { name: 'Feedback', href: '/feedback' },
   ];
 
   const sendVerificationOtp = async () => {
