@@ -25,9 +25,18 @@ export default function PatientBlogs() {
 
   return (
     <div className="container-custom py-12">
-      <header className="mb-12 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight gradient-text">Supportive Insights</h1>
-        <p className="text-xl text-foreground/60 mt-2">Find stories, advice, and community wisdom.</p>
+      <header className="mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="text-center md:text-left">
+          <h1 className="text-4xl font-extrabold tracking-tight gradient-text">Supportive Insights</h1>
+          <p className="text-xl text-foreground/60 mt-2">Find stories, advice, and community wisdom.</p>
+        </div>
+        <Link 
+          href="/create-blog"
+          className="flex items-center gap-2 px-6 py-3 bg-cta text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all"
+        >
+          <span className="text-lg">+</span>
+          Create Post
+        </Link>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -12,6 +12,8 @@ export const AppContextProvider = ({ children }) => {
     const [isLoggedin, setIsLoggedin] = useState(false);
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [healthInsights, setHealthInsights] = useState(null);
+    const [language, setLanguage] = useState('en'); // 'en' or 'si'
 
     // Ensure axios sends cookies
     axios.defaults.withCredentials = true;
@@ -54,7 +56,9 @@ export const AppContextProvider = ({ children }) => {
         userData, setUserData,
         getUserData,
         getAuthState,
-        loading
+        loading,
+        healthInsights, setHealthInsights,
+        language, setLanguage
     }
 
     return (
