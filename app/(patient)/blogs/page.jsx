@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import { User } from 'lucide-react';
 
 export default function PatientBlogs() {
   const [blogs, setBlogs] = useState([]);
@@ -67,8 +68,10 @@ export default function PatientBlogs() {
                 <p className="text-foreground/60 text-sm line-clamp-3 mb-4">{blog.description}</p>
                 <div className="mt-auto">
                   <div className="flex items-center gap-2 mb-4">
-                    <img src={blog.authorImg} alt={blog.author} className="w-8 h-8 rounded-full border border-border" />
-                    <span className="text-xs font-medium">{blog.author}</span>
+                    <div className="w-8 h-8 rounded-full border border-border bg-secondary/50 flex items-center justify-center">
+                      <User className="w-4 h-4 text-foreground/40" />
+                    </div>
+                    <span className="text-xs font-medium text-foreground/60">Anonymous</span>
                   </div>
                   <Link 
                     href={`/blogs/${blog._id}`}

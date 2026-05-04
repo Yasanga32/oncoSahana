@@ -20,8 +20,8 @@ export default function CreateBlog() {
     title: "",
     description: "",
     category: "Health",
-    author: userData?.name || "Anonymous",
-    authorImg: "/author_img.png" // Default if not in user data
+    author: "Anonymous",
+    authorImg: "/author_img.png" 
   });
 
   const onChangeHandler = (e) => {
@@ -139,9 +139,10 @@ export default function CreateBlog() {
 
           {/* Author Display (Read-only) */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-foreground/80">Author</label>
-            <div className="px-4 py-3 rounded-xl border border-border bg-secondary/20 text-foreground/60">
-              {userData?.name || "Guest User"}
+            <label className="text-sm font-semibold text-foreground/80">Privacy Setting</label>
+            <div className="px-4 py-3 rounded-xl border border-border bg-success/5 text-success text-xs font-bold flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+              Posting as Anonymous
             </div>
           </div>
         </div>

@@ -81,10 +81,12 @@ export default function BlogDetails({ params }) {
           
           <div className="flex flex-wrap items-center gap-6 pb-8 border-b border-border">
             <div className="flex items-center gap-3">
-              <img src={blog.authorImg} alt={blog.author} className="w-10 h-10 rounded-full border border-border" />
+              <div className="w-10 h-10 rounded-full border border-border bg-secondary/50 flex items-center justify-center">
+                <User className="w-5 h-5 text-foreground/40" />
+              </div>
               <div>
-                <p className="text-sm font-bold">{blog.author}</p>
-                <p className="text-xs text-foreground/50">Medical Contributor</p>
+                <p className="text-sm font-bold">Anonymous</p>
+                <p className="text-xs text-foreground/50">Community Contributor</p>
               </div>
             </div>
           </div>
