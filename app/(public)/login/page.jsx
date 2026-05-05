@@ -27,12 +27,6 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!backendUrl) {
-      toast.error('Backend URL is missing');
-      setIsLoading(false);
-      return;
-    }
-
     try {
       axios.defaults.withCredentials = true;
 

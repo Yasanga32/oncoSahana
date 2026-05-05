@@ -7,14 +7,28 @@ import { User } from 'lucide-react';
 
 export default function PatientBlogs() {
   const [blogs, setBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [categories, setCategories] = useState(['All']);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [loading, setLoading] = useState(true);
 
-  const fetchBlogs = async () => {
+  const fetchBlogs = async (retries = 3) => {
     try {
       const { data } = await axios.get('/blog-api/blog');
-      setBlogs(data.blogs || []);
+      const allBlogs = data.blogs || [];
+      setBlogs(allBlogs);
+      setFilteredBlogs(allBlogs);
+      
+      // Dynamically extract unique categories
+      const uniqueCategories = ['All', ...new Set(allBlogs.map(blog => blog.category))];
+      setCategories(uniqueCategories);
     } catch (error) {
-      console.error("Error fetching blogs:", error);
+      if (retries > 0) {
+        console.log(`Retrying blog fetch... (${retries} attempts left)`);
+        setTimeout(() => fetchBlogs(retries - 1), 5000);
+      } else {
+        console.error("Error fetching blogs:", error);
+      }
     } finally {
       setLoading(false);
     }
@@ -24,9 +38,17 @@ export default function PatientBlogs() {
     fetchBlogs();
   }, []);
 
+  useEffect(() => {
+    if (selectedCategory === 'All') {
+      setFilteredBlogs(blogs);
+    } else {
+      setFilteredBlogs(blogs.filter(blog => blog.category === selectedCategory));
+    }
+  }, [selectedCategory, blogs]);
+
   return (
     <div className="container-custom py-12">
-      <header className="mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
+      <header className="mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-center md:text-left">
           <h1 className="text-4xl font-extrabold tracking-tight gradient-text">Supportive Insights</h1>
           <p className="text-xl text-foreground/60 mt-2">Find stories, advice, and community wisdom.</p>
@@ -40,6 +62,25 @@ export default function PatientBlogs() {
         </Link>
       </header>
 
+      {/* Dynamic Category Filter */}
+      {!loading && categories.length > 1 && (
+        <div className="flex flex-wrap items-center gap-3 mb-10 overflow-x-auto pb-2 scrollbar-hide">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-5 py-2 rounded-full text-sm font-bold transition-all border ${
+                selectedCategory === cat 
+                  ? 'bg-primary text-white border-primary shadow-md' 
+                  : 'bg-white text-foreground/60 border-border hover:border-primary/50'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {loading ? (
           [1, 2, 3, 4, 5, 6].map((i) => (
@@ -52,12 +93,12 @@ export default function PatientBlogs() {
               </div>
             </article>
           ))
-        ) : (
-          blogs.map((blog) => (
+        ) : filteredBlogs.length > 0 ? (
+          filteredBlogs.map((blog) => (
             <article key={blog._id} className="group rounded-2xl border border-border bg-card overflow-hidden transition-all hover:shadow-md flex flex-col">
               <div className="h-48 bg-secondary/30 relative overflow-hidden">
                 <img 
-                  src={`http://localhost:3001${blog.image}`} 
+                  src={blog.image.startsWith('http') ? blog.image : `${(process.env.NEXT_PUBLIC_BLOG_IMAGE_URL || 'http://localhost:3001').replace(/\/$/, '')}/${blog.image.replace(/^\//, '')}`} 
                   alt={blog.title}
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 />
@@ -84,6 +125,10 @@ export default function PatientBlogs() {
               </div>
             </article>
           ))
+        ) : (
+          <div className="col-span-full py-20 text-center">
+            <p className="text-foreground/40 text-lg">No blogs found in this category.</p>
+          </div>
         )}
       </div>
     </div>

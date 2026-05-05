@@ -16,6 +16,8 @@ export default function CreateBlog() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   
+  const [categories, setCategories] = useState(['Health', 'Lifestyle', 'Community', 'Nutrition', 'Research']);
+  
   const [data, setData] = useState({
     title: "",
     description: "",
@@ -23,6 +25,25 @@ export default function CreateBlog() {
     author: "Anonymous",
     authorImg: "/author_img.png" 
   });
+
+  // Fetch existing categories on load to stay in sync with the blog project
+  useState(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data: blogData } = await axios.get('/blog-api/blog');
+        if (blogData.success && blogData.blogs) {
+          const uniqueCategories = [...new Set(blogData.blogs.map(b => b.category))];
+          if (uniqueCategories.length > 0) {
+            setCategories(uniqueCategories);
+            setData(prev => ({ ...prev, category: uniqueCategories[0] }));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to sync categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const onChangeHandler = (e) => {
     const name = e.target.name;
@@ -129,11 +150,9 @@ export default function CreateBlog() {
               onChange={onChangeHandler}
               className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none cursor-pointer"
             >
-              <option value="Health">Health & Wellness</option>
-              <option value="Lifestyle">Lifestyle</option>
-              <option value="Community">Community Stories</option>
-              <option value="Nutrition">Nutrition</option>
-              <option value="Research">Research & News</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
             </select>
           </div>
 

@@ -31,24 +31,46 @@ export const AppContextProvider = ({ children }) => {
 
     const getAuthState = useCallback(async () => {
         try {
-            const { data } = await axios.get(backendUrl + '/api/auth/is-auth')
+            // If we're already logged in, don't block
+            const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
 
             if (data.success) {
-                setIsLoggedin(true)
-                getUserData()
+                setIsLoggedin(true);
+                // Fetch user data without blocking the main loading state if possible
+                getUserData();
+            } else {
+                setIsLoggedin(false);
+                setUserData(null);
             }
         } catch (error) {
             console.error('Error fetching auth state:', error.message);
+            setIsLoggedin(false);
         } finally {
             setLoading(false);
         }
     }, [backendUrl, getUserData]);
 
+    // Wake up Render services in the background
+    const wakeUpServices = useCallback(async () => {
+        const services = ['/api/auth/is-auth', '/blog-api/blog', '/feedback-api/feedback'];
+        services.forEach(url => {
+            axios.get(url).catch(() => {}); // We don't care about the result, just want to wake them up
+        });
+    }, []);
+
     useEffect(() => {
-        if (backendUrl) {
+        if (backendUrl !== undefined) {
             getAuthState();
+            wakeUpServices(); // Start waking up other services
         }
-    }, [backendUrl, getAuthState]);
+        
+        // Safety timeout
+        const timeout = setTimeout(() => {
+            setLoading(false);
+        }, 10000);
+
+        return () => clearTimeout(timeout);
+    }, [backendUrl, getAuthState, wakeUpServices]);
 
     const value = {
         backendUrl,

@@ -95,7 +95,7 @@ export default function BlogDetails({ params }) {
         {/* Hero Image */}
         <div className="aspect-video relative rounded-3xl overflow-hidden mb-12 shadow-2xl">
           <img 
-            src={`http://localhost:3001${blog.image}`} 
+            src={blog.image.startsWith('http') ? blog.image : `${(process.env.NEXT_PUBLIC_BLOG_IMAGE_URL || 'http://localhost:3001').replace(/\/$/, '')}/${blog.image.replace(/^\//, '')}`} 
             alt={blog.title}
             className="w-full h-full object-cover"
           />
