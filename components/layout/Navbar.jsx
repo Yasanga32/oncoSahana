@@ -6,7 +6,7 @@ import { useState, useContext, useEffect } from 'react';
 import { AppContent } from '../../context/AppContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { ChevronDown, LogOut, UserCheck, Menu, X } from 'lucide-react';
+import { ChevronDown, LogOut, UserCheck, Menu, X, ShieldCheck } from 'lucide-react';
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -69,7 +69,7 @@ const Navbar = () => {
 
         {/* Links */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {userData && navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -94,6 +94,15 @@ const Navbar = () => {
               {/* Dropdown */}
               <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="w-48 p-2 rounded-xl border border-border bg-card shadow-xl">
+                  {userData.role === 'admin' && (
+                    <Link 
+                      href="/admin/dashboard"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors font-bold"
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                      Admin Panel
+                    </Link>
+                  )}
                   {!userData.isAccountVerified && (
                     <button 
                       onClick={sendVerificationOtp}
@@ -144,7 +153,7 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-card/95 backdrop-blur-xl border-b border-border p-6 animate-in slide-in-from-top-2 duration-300">
           <div className="flex flex-col gap-6">
-            {navLinks.map((link) => (
+            {userData && navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

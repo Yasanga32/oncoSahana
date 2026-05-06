@@ -33,7 +33,12 @@ export default function FeedbackPage() {
     setLoading(true);
     try {
       // Using the rewrite defined in next.config.mjs
-      const response = await axios.post('/feedback-api/feedback', formData);
+      const payload = {
+        ...formData,
+        appId: process.env.NEXT_PUBLIC_APP_ID || 'cancer-platform'
+      };
+      
+      const response = await axios.post('/feedback-api/feedback', payload);
       
       if (response.data) {
         toast.success("Feedback submitted successfully! Our AI is analyzing it.");

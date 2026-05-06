@@ -31,7 +31,12 @@ export default function LoginPage() {
       axios.defaults.withCredentials = true;
 
       if (state === "Sign Up") {
-        const { data } = await axios.post(backendUrl + '/api/auth/register', { name, email, password });
+        const { data } = await axios.post(backendUrl + '/api/auth/register', { 
+          name, 
+          email, 
+          password,
+          appId: process.env.NEXT_PUBLIC_APP_ID 
+        });
 
         if (data.success) {
           setIsLoggedin(true);
@@ -42,7 +47,11 @@ export default function LoginPage() {
           toast.error(data.message);
         }
       } else {
-        const { data } = await axios.post(backendUrl + '/api/auth/login', { email, password });
+        const { data } = await axios.post(backendUrl + '/api/auth/login', { 
+          email, 
+          password,
+          appId: process.env.NEXT_PUBLIC_APP_ID 
+        });
 
         if (data.success) {
           setIsLoggedin(true);

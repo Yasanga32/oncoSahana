@@ -46,7 +46,10 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { data } = await axios.post(backendUrl + '/api/auth/send-reset-otp', { email });
+      const { data } = await axios.post(backendUrl + '/api/auth/send-reset-otp', { 
+        email,
+        appId: process.env.NEXT_PUBLIC_APP_ID 
+      });
       if (data.success) {
         toast.success(data.message);
         setIsEmailSent(true);
@@ -71,7 +74,12 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { data } = await axios.post(backendUrl + '/api/auth/reset-password', { email, otp, newPassword });
+      const { data } = await axios.post(backendUrl + '/api/auth/reset-password', { 
+        email, 
+        otp, 
+        newPassword,
+        appId: process.env.NEXT_PUBLIC_APP_ID
+      });
       if (data.success) {
         toast.success(data.message);
         router.push('/login');

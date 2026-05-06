@@ -20,13 +20,24 @@ export const AppContextProvider = ({ children }) => {
 
     const getUserData = useCallback(async () => {
         try {
-            const { data } = await axios.get(backendUrl + '/api/user/data')
-            data.success ? setUserData(data.userData) : toast.error(data.message)
-
+            const { data } = await axios.get(backendUrl + '/api/user/data');
+            if (data.success) {
+                setUserData(data.userData);
+            } else {
+                // If user data fetch fails, the session is likely stale or invalid
+                setIsLoggedin(false);
+                setUserData(null);
+                // We don't toast "User not found" on every refresh for guests
+                if (data.message !== 'User not found') {
+                    toast.error(data.message);
+                }
+            }
         } catch (error) {
             console.error('Error fetching user data:', error.message);
+            setIsLoggedin(false);
+            setUserData(null);
         }
-    }, [backendUrl])
+    }, [backendUrl]);
 
 
     const getAuthState = useCallback(async () => {
