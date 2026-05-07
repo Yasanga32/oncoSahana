@@ -43,7 +43,7 @@ export default function AISupport() {
 
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
+        model: "gemini-1.5-flash",
         systemInstruction: "You are oncoSahana, a compassionate AI health assistant for cancer patients. Provide medical information, emotional support, and lifestyle guidance. ALWAYS include a disclaimer that you are an AI and not a doctor. Be empathetic. You support both English and Sinhala."
       });
 
@@ -141,7 +141,7 @@ export default function AISupport() {
           </form>
           <div className="mt-3 flex items-center justify-center gap-1.5 text-[9px] text-foreground/40 font-bold uppercase tracking-widest">
             <Sparkles className="w-3 h-3 text-primary" />
-            Powered by Gemini 2.5 Flash
+            Powered by Gemini 1.5 Flash
           </div>
         </div>
       </div>

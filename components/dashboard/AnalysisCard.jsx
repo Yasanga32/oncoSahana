@@ -41,7 +41,7 @@ export default function AnalysisCard() {
 
       const genAI = new GoogleGenerativeAI(apiKey);
       // Using 1.5 Flash as it is highly optimized for document and image analysis
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       // Convert file to base64
       const base64Data = await new Promise((resolve) => {
