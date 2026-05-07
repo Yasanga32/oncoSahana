@@ -41,7 +41,7 @@ export default function LoginPage() {
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
-          router.push('/');
+          router.push('/dashboard');
           toast.success('Welcome to oncoSahana!');
         } else {
           toast.error(data.message);
@@ -56,7 +56,7 @@ export default function LoginPage() {
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
-          router.push('/');
+          router.push('/dashboard');
           toast.success('Welcome back!');
         } else {
           toast.error(data.message);

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useEffect, useState, useCallback } from "react";
+import { createContext, useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -61,8 +61,14 @@ export const AppContextProvider = ({ children }) => {
         }
     }, [backendUrl, getUserData]);
 
+    // Track if we've already tried to wake up services to avoid spamming
+    const wakeupAttempted = useRef(false);
+
     // Wake up Render services in the background
     const wakeUpServices = useCallback(async () => {
+        if (wakeupAttempted.current) return;
+        wakeupAttempted.current = true;
+
         const services = ['/api/auth/is-auth', '/blog-api/blog', '/feedback-api/feedback'];
         services.forEach(url => {
             axios.get(url).catch(() => {}); // We don't care about the result, just want to wake them up
@@ -70,7 +76,7 @@ export const AppContextProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (backendUrl !== undefined) {
+        if (backendUrl) {
             getAuthState();
             wakeUpServices(); // Start waking up other services
         }
@@ -83,7 +89,7 @@ export const AppContextProvider = ({ children }) => {
         return () => clearTimeout(timeout);
     }, [backendUrl, getAuthState, wakeUpServices]);
 
-    const value = {
+    const value = useMemo(() => ({
         backendUrl,
         isLoggedin, setIsLoggedin,
         userData, setUserData,
@@ -92,7 +98,10 @@ export const AppContextProvider = ({ children }) => {
         loading,
         healthInsights, setHealthInsights,
         language, setLanguage
-    }
+    }), [
+        backendUrl, isLoggedin, userData, loading, healthInsights, language,
+        getUserData, getAuthState
+    ]);
 
     return (
         <AppContent.Provider value={value}>
