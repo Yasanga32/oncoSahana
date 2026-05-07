@@ -7,8 +7,13 @@ export function middleware(request) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get('token')?.value;
 
-  // 1. Skip middleware for static assets and API routes (though matcher should handle this)
-  if (pathname.includes('.') || pathname.startsWith('/api')) {
+  // 1. Skip middleware for static assets, public files, and icons
+  if (
+    pathname.includes('.') || 
+    pathname.startsWith('/api') || 
+    pathname.startsWith('/_next') ||
+    pathname.includes('favicon')
+  ) {
     return NextResponse.next();
   }
 
@@ -16,17 +21,14 @@ export function middleware(request) {
   const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
   
   if (isProtectedRoute && !token) {
-    const url = new URL('/login', request.url);
-    // Don't redirect if we're already going to login to prevent loops
+    // Only redirect if we are NOT already on the login page
     if (pathname === '/login') return NextResponse.next();
     
+    const url = new URL('/login', request.url);
     url.searchParams.set('redirect', pathname);
     return NextResponse.redirect(url);
   }
 
-  // 3. Optional: Redirect logged-in users away from auth pages
-  // But we keep it open for now to allow "stale cookie" fixes as per your previous design
-  
   return NextResponse.next();
 }
 

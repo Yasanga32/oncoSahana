@@ -14,20 +14,20 @@ export default function PatientBlogs() {
 
   const fetchBlogs = async (retries = 3) => {
     try {
+      setLoading(true);
       const { data } = await axios.get('/blog-api/blog');
-      const allBlogs = data.blogs || [];
+      const allBlogs = data?.blogs || [];
       setBlogs(allBlogs);
       setFilteredBlogs(allBlogs);
       
-      // Dynamically extract unique categories
-      const uniqueCategories = ['All', ...new Set(allBlogs.map(blog => blog.category))];
+      // Dynamically extract unique categories with safety check
+      const uniqueCategories = ['All', ...new Set(allBlogs.filter(b => b && b.category).map(blog => blog.category))];
       setCategories(uniqueCategories);
     } catch (error) {
+      console.error("Error fetching blogs:", error);
       if (retries > 0) {
         console.log(`Retrying blog fetch... (${retries} attempts left)`);
         setTimeout(() => fetchBlogs(retries - 1), 5000);
-      } else {
-        console.error("Error fetching blogs:", error);
       }
     } finally {
       setLoading(false);
@@ -98,9 +98,12 @@ export default function PatientBlogs() {
             <article key={blog._id} className="group rounded-2xl border border-border bg-card overflow-hidden transition-all hover:shadow-md flex flex-col">
               <div className="h-48 bg-secondary/30 relative overflow-hidden">
                 <img 
-                  src={blog.image.startsWith('http') ? blog.image : `${(process.env.NEXT_PUBLIC_BLOG_IMAGE_URL || 'http://localhost:3001').replace(/\/$/, '')}/${blog.image.replace(/^\//, '')}`} 
-                  alt={blog.title}
+                  src={blog.image?.startsWith('http') ? blog.image : `${(process.env.NEXT_PUBLIC_BLOG_IMAGE_URL || 'http://localhost:3001').replace(/\/$/, '')}/${blog.image?.replace(/^\//, '') || ''}`} 
+                  alt={blog.title || 'Blog Post'}
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                  onError={(e) => {
+                    e.target.src = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800'; // Fallback medical image
+                  }}
                 />
               </div>
               <div className="p-6 flex flex-col flex-grow">

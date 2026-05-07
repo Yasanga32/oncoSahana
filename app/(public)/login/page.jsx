@@ -11,11 +11,14 @@ export default function LoginPage() {
   const router = useRouter();
   const { backendUrl, isLoggedin, setIsLoggedin, getUserData, loading } = useContext(AppContent);
 
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
+
   React.useEffect(() => {
     if (!loading && isLoggedin) {
-      router.push('/dashboard');
+      router.push(redirectPath);
     }
-  }, [isLoggedin, loading, router]);
+  }, [isLoggedin, loading, router, redirectPath]);
 
   const [state, setState] = useState('Login');
   const [name, setName] = useState('');
